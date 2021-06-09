@@ -161,8 +161,8 @@ export function createProduction (t: TFunction, firstOnly?: boolean): LinkOption
       }
     },
     {
-      info: 'westlake',
-      text: t('rpc.prod.westlake', 'Westlake', { ns: 'apps-config' }),
+      info: 'datahighway-westlake-chain-mainnet',
+      text: t('rpc.prod.westlake', 'DataHighway Westlake', { ns: 'apps-config' }),
       providers: {
         DataHighway: 'wss://westlake.datahighway.com'
       }

@@ -12,6 +12,8 @@ const definitions: OverrideBundleDefinition = {
       // on all versions
       minmax: [0, undefined],
       types: {
+        Date: 'i64',
+        AccountInfo: "AccountInfoWithDualRefCount",
         Keys: 'SessionKeys2',
         Address: 'MultiAddress',
         LookupSource: 'MultiAddress',
@@ -37,7 +39,7 @@ const definitions: OverrideBundleDefinition = {
         RoamingAccountingPolicyType: 'Text',
         RoamingAccountingPolicyUplinkFeeFactor: 'u32',
         RoamingAccountingPolicyDownlinkFeeFactor: 'u32',
-        RoamingAccountingPolicyConfig: {
+        RoamingAccountingPolicySetting: {
           policy_type: 'Text',
           subscription_fee: 'Balance',
           uplink_fee_factor: 'u32',
@@ -46,7 +48,7 @@ const definitions: OverrideBundleDefinition = {
         RoamingAgreementPolicy: '[u8; 16]',
         RoamingAgreementPolicyIndex: 'u64',
         RoamingAgreementPolicyActivationType: 'Text',
-        RoamingAgreementPolicyConfig: {
+        RoamingAgreementPolicySetting: {
           policy_activation_type: 'Text',
           policy_expiry_block: 'Moment'
         },
@@ -58,7 +60,7 @@ const definitions: OverrideBundleDefinition = {
         RoamingDeviceProfileDevEUI: 'Text',
         RoamingDeviceProfileJoinEUI: 'Text',
         RoamingDeviceProfileVendorID: 'Text',
-        RoamingDeviceProfileConfig: {
+        RoamingDeviceProfileSetting: {
           device_profile_devaddr: 'Text',
           device_profile_deveui: 'Text',
           device_profile_joineui: 'Text',
@@ -76,13 +78,13 @@ const definitions: OverrideBundleDefinition = {
         },
         RoamingBillingPolicy: '[u8; 16]',
         RoamingBillingPolicyIndex: 'u64',
-        RoamingBillingPolicyConfig: {
+        RoamingBillingPolicySetting: {
           policy_next_billing_at_block: 'Moment',
           policy_frequency_in_blocks: 'Moment'
         },
         RoamingChargingPolicy: '[u8; 16]',
         RoamingChargingPolicyIndex: 'u64',
-        RoamingChargingPolicyConfig: {
+        RoamingChargingPolicySetting: {
           policy_next_charging_at_block: 'Moment',
           policy_delay_after_billing_in_blocks: 'u64'
         },
@@ -107,7 +109,7 @@ const definitions: OverrideBundleDefinition = {
         MiningRatesTokenTokenIOTA: 'u32',
         MiningRatesTokenMaxToken: 'u32',
         MiningRatesTokenMaxLoyalty: 'u32',
-        MiningRatesTokenConfig: {
+        MiningRatesTokenSetting: {
           token_token_mxc: 'u32',
           token_token_iota: 'u32',
           token_token_dot: 'u32',
@@ -122,7 +124,7 @@ const definitions: OverrideBundleDefinition = {
         MiningRatesHardwareCategory1MaxTokenBonusPerGateway: 'u32',
         MiningRatesHardwareCategory2MaxTokenBonusPerGateway: 'u32',
         MiningRatesHardwareCategory3MaxTokenBonusPerGateway: 'u32',
-        MiningRatesHardwareConfig: {
+        MiningRatesHardwareSetting: {
           hardware_hardware_secure: 'u32',
           hardware_hardware_insecure: 'u32',
           hardware_max_hardware: 'u32',
@@ -130,28 +132,28 @@ const definitions: OverrideBundleDefinition = {
           hardware_category_2_max_token_bonus_per_gateway: 'u32',
           hardware_category_3_max_token_bonus_per_gateway: 'u32'
         },
-        MiningConfigToken: '[u8; 16]',
-        MiningConfigTokenIndex: 'u64',
-        MiningConfigTokenType: 'Text',
-        MiningConfigTokenLockAmount: 'u64',
-        MiningConfigTokenConfig: {
+        MiningSettingToken: '[u8; 16]',
+        MiningSettingTokenIndex: 'u64',
+        MiningSettingTokenType: 'Text',
+        MiningSettingTokenLockAmount: 'u64',
+        MiningSettingTokenSetting: {
           token_type: 'Text',
           token_lock_amount: 'u64',
           token_lock_start_block: 'Moment',
           token_lock_interval_blocks: 'Moment'
         },
-        MiningConfigTokenRequirementsConfig: {
+        MiningSettingTokenRequirementsSetting: {
           token_type: 'Text',
           token_lock_min_amount: 'u64',
           token_lock_min_blocks: 'u32'
         },
-        MiningConfigHardware: '[u8; 16]',
-        MiningConfigHardwareIndex: 'u64',
-        MiningConfigHardwareSecure: 'bool',
-        MiningConfigHardwareType: 'Text',
-        MiningConfigHardwareID: 'u64',
-        MiningConfigHardwareDevEUI: 'u64',
-        MiningConfigHardwareConfig: {
+        MiningSettingHardware: '[u8; 16]',
+        MiningSettingHardwareIndex: 'u64',
+        MiningSettingHardwareSecure: 'bool',
+        MiningSettingHardwareType: 'Text',
+        MiningSettingHardwareID: 'u64',
+        MiningSettingHardwareDevEUI: 'u64',
+        MiningSettingHardwareSetting: {
           hardware_secure: 'bool',
           hardware_type: 'Text',
           hardware_id: 'u64',
@@ -162,14 +164,14 @@ const definitions: OverrideBundleDefinition = {
         MiningSamplingToken: '[u8; 16]',
         MiningSamplingTokenIndex: 'u64',
         MiningSamplingTokenSampleLockedAmount: 'u64',
-        MiningSamplingTokenConfig: {
+        MiningSamplingTokenSetting: {
           token_sample_block: 'Moment',
           token_sample_locked_amount: 'u64'
         },
         MiningSamplingHardware: '[u8; 16]',
         MiningSamplingHardwareIndex: 'u64',
         MiningSamplingHardwareSampleHardwareOnline: 'u64',
-        MiningSamplingHardwareConfig: {
+        MiningSamplingHardwareSetting: {
           hardware_sample_block: 'Moment',
           hardware_sample_hardware_online: 'bool'
         },
@@ -195,6 +197,69 @@ const definitions: OverrideBundleDefinition = {
           hardware_block_audited: 'Moment',
           hardware_auditor_account_id: 'u64'
         },
+        MiningEligibilityProxy: '[u8; 16]',
+        MiningEligibilityProxyIndex: 'u64',
+        MiningEligibilityProxyRewardRequest: {
+          proxy_claim_requestor_account_id: 'AccountId',
+          proxy_claim_total_reward_amount: 'Balance',
+          proxy_claim_timestamp_redeemed: 'Moment'
+        },
+        MiningEligibilityProxyClaimRewardeeData: {
+          proxy_claim_rewardee_account_id: 'AccountId',
+          proxy_claim_reward_amount: 'Balance',
+          proxy_claim_start_date: 'Date',
+          proxy_claim_end_date: 'Date'
+        },
+        RewardeeData: {
+          proxy_claim_rewardee_account_id: 'AccountId',
+          proxy_claim_reward_amount: 'Balance',
+          proxy_claim_start_date: 'Date',
+          proxy_claim_end_date: 'Date'
+        },
+        RewardRequestorData: {
+          mining_eligibility_proxy_id: 'MiningEligibilityProxyIndex',
+          total_amt: 'Balance',
+          rewardee_count: 'u64',
+          member_kind: 'u32',
+          requested_date: 'Moment'
+        },
+        RequestorData: {
+          mining_eligibility_proxy_id: 'MiningEligibilityProxyIndex',
+          total_amt: 'Balance',
+          rewardee_count: 'u64',
+          member_kind: 'u32',
+          requested_date: 'Moment'
+        },
+        RewardTransferData: {
+          mining_eligibility_proxy_id: 'MiningEligibilityProxyIndex',
+          is_sent: 'bool',
+          total_amt: 'Balance',
+          rewardee_count: 'u64',
+          member_kind: 'u32',
+          requested_date: 'Moment'
+        },
+        TransferData: {
+          mining_eligibility_proxy_id: 'MiningEligibilityProxyIndex',
+          is_sent: 'bool',
+          total_amt: 'Balance',
+          rewardee_count: 'u64',
+          member_kind: 'u32',
+          requested_date: 'Moment'
+        },
+        RewardDailyData: {
+          mining_eligibility_proxy_id: 'MiningEligibilityProxyIndex',
+          total_amt: 'Balance',
+          proxy_claim_requestor_account_id: 'AccountId',
+          member_kind: 'u32',
+          rewarded_date: 'Date'
+        },
+        DailyData: {
+          mining_eligibility_proxy_id: 'MiningEligibilityProxyIndex',
+          total_amt: 'Balance',
+          proxy_claim_requestor_account_id: 'AccountId',
+          member_kind: 'u32',
+          rewarded_date: 'Date'
+        },
         MiningClaimsToken: '[u8; 16]',
         MiningClaimsTokenIndex: 'u64',
         MiningClaimsTokenClaimAmount: 'u64',
@@ -218,7 +283,7 @@ const definitions: OverrideBundleDefinition = {
           token_execution_ended_block: 'Moment'
         },
         ExchangeRateIndex: 'u64',
-        ExchangeRateConfig: {
+        ExchangeRateSetting: {
           hbtc: 'u64',
           dot: 'u64',
           iota: 'u64',
