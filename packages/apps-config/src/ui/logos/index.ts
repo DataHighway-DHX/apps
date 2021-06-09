@@ -130,7 +130,8 @@ export const chainLogos: Record<string, unknown> = [
   // https://github.com/DataHighway-DHX/node/blob/master/node/src/chain_spec.rs#L807
   ['DataHighway Westlake Mainnet', nodeDataHighwayDefault],
   // https://github.com/DataHighway-DHX/node/blob/ilya/parachain/node/src/chain_spec.rs#L239
-  ['DataHighway Spreehafen', nodeDataHighwayDefault], // TODO - rename to 'DataHighway Spreehafen' in ilya/parachain branch
+  // TODO - rename to 'DataHighway Spreehafen Parachan Testnet' in ilya/parachain branch
+  ['DataHighway Spreehafen Parachan Testnet', nodeDataHighwayDefault],
   ['Dusty', chainDusty],
   ['EquilibriumTestnet', chainGenshiro],
   ['Equilibrium', chainEquilibrium],
