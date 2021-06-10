@@ -20,7 +20,7 @@ import crust from './crust';
 import testPara from './cumulus-test-parachain';
 import darwinia from './darwinia';
 import darwiniaParachain from './darwinia-parachain';
-import datahighwayWestlakeChainMainnet from './datahighway-westlake-mainnet';
+import datahighwayWestlakeChainMainnet from './datahighway-westlake-chain-mainnet';
 import datahighwaySpreehafenParachainTestnet from './datahighway-spreehafen-parachain-testnet';
 import dockPoaMainnet from './dock-poa-mainnet';
 import dockPoaTestnet from './dock-poa-testnet';
