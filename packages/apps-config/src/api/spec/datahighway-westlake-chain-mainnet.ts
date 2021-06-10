@@ -13,7 +13,7 @@ const definitions: OverrideBundleDefinition = {
       minmax: [0, undefined],
       types: {
         Date: 'i64',
-        AccountInfo: "AccountInfoWithDualRefCount",
+        AccountInfo: 'AccountInfoWithDualRefCount',
         Keys: 'SessionKeys2',
         Address: 'MultiAddress',
         LookupSource: 'MultiAddress',
