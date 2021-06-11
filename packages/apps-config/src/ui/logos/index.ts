@@ -42,7 +42,7 @@ import nodeClover from './nodes/clover.svg';
 import nodeCrab from './nodes/crab.svg';
 import nodeCrust from './nodes/crust.svg';
 import nodeDarwinia from './nodes/darwinia.png';
-import nodeDataHighway from './nodes/datahighway.png';
+import nodeDataHighwayDefault from './nodes/datahighway-default-logo.png';
 import nodeDockMainnet from './nodes/dock-mainnet.png';
 import nodeDockTestnet from './nodes/dock-testnet.png';
 import nodeDotMog from './nodes/dotmog.svg';
@@ -109,7 +109,6 @@ import nodeUnique from './nodes/unique.svg';
 import nodeUnitv from './nodes/unitv.png';
 import nodeVln from './nodes/valiu.png';
 import nodeWeb3games from './nodes/web3games.svg';
-import nodeWestlake from './nodes/westlake.png';
 import nodeWhala from './nodes/whala.svg';
 import nodeZeitgeist from './nodes/zeitgeist.png';
 import nodeZenlink from './nodes/zenlink.svg';
@@ -130,7 +129,12 @@ export const chainLogos: Record<string, unknown> = [
   ['darwinia crab', nodeCrab],
   ['Darwinia Crab PC2', nodeCrab],
   ['Darwinia PC2', nodeDarwinia],
-  ['DataHighway', nodeDataHighway],
+  // https://github.com/DataHighway-DHX/node/blob/master/node/src/chain_spec.rs#L478
+  ['DataHighway Harbour Testnet', nodeDataHighwayDefault],
+  // https://github.com/DataHighway-DHX/node/blob/master/node/src/chain_spec.rs#L807
+  ['DataHighway Westlake Mainnet', nodeDataHighwayDefault],
+  // https://github.com/DataHighway-DHX/node/blob/ilya/parachain/node/src/chain_spec.rs#L239
+  ['DataHighway Spreehafen Parachain Collator Testnet', nodeDataHighwayDefault],
   ['Dusty', chainDusty],
   ['EquilibriumTestnet', chainGenshiro],
   ['Equilibrium', chainEquilibrium],
@@ -211,7 +215,6 @@ export const chainLogos: Record<string, unknown> = [
   ['VLN PC', nodeVln],
   ['Vln', nodeVln],
   ['Web3games', nodeWeb3games],
-  ['Westlake', nodeWestlake],
   ['Westmint', nodeStatemine],
   ['Westmint Test', nodeStatemine],
   ['WILT', nodeKilt]
@@ -247,9 +250,13 @@ export const nodeLogos: Record<string, unknown> = [
   ['darwinia', nodeDarwinia],
   ['darwinia parachain', nodeDarwinia],
   ['Darwinia Runtime Module Library', nodeDarwinia],
-  ['DataHighway', nodeDataHighway],
-  ['DataHighway Node', nodeDataHighway],
-  ['DataHighway Parachain Collator', nodeDataHighway],
+  ['DataHighway', nodeDataHighwayDefault], // TODO - deprecated?
+  // https://github.com/DataHighway-DHX/node/blob/master/node/src/command.rs#L43
+  ['DataHighwayChain', nodeDataHighwayDefault], // Harbour + Westlake
+  // https://github.com/DataHighway-DHX/node/blob/ilya/parachain/node/src/command.rs#L53
+  ['DataHighway Collator', nodeDataHighwayDefault], // Spreehafen
+  ['DataHighway Node', nodeDataHighwayDefault], // TODO - deprecated?
+  ['DataHighway Parachain Collator', nodeDataHighwayDefault], // TODO - deprecated?
   ['Dock Full Node', nodeDockMainnet],
   ['DOTMog Node', nodeDotMog],
   ['Eave Node', nodeEave],
@@ -336,7 +343,7 @@ export const nodeLogos: Record<string, unknown> = [
   ['Vln', nodeVln],
   ['VLN PC', nodeVln],
   ['Web3games', nodeWeb3games],
-  ['Westlake', nodeWestlake],
+  ['Westlake', nodeDataHighwayDefault],
   ['Westmint Collator', nodeStatemine],
   ['Whala', nodeWhala],
   ['Whala Node', nodeWhala],
@@ -352,6 +359,7 @@ export const nodeLogos: Record<string, unknown> = [
 
 // Alphabetical overrides based on the actual specName
 export const specLogos: Record<string, unknown> = [
+  ['datahighway', nodeStatemine],
   ['shell', nodeShell],
   ['statemine', nodeStatemine],
   ['statemint', nodeStatemine],
@@ -382,7 +390,8 @@ export const namedLogos: Record<string, unknown> = {
   crab_redirect: nodeCrab,
   crust: nodeCrust,
   darwinia: nodeDarwinia,
-  datahighway: nodeDataHighway,
+  'datahighway-harbour-chain-testnet': nodeDataHighwayDefault,
+  'datahighway-westlake-chain-mainnet': nodeDataHighwayDefault,
   'dock-mainnet': nodeDockMainnet,
   'dock-testnet': nodeDockTestnet,
   dotmog: nodeDotMog,
@@ -448,7 +457,7 @@ export const namedLogos: Record<string, unknown> = {
   rococoCrab: nodeCrab,
   rococoCrust: nodeCrust,
   rococoDarwinia: nodeDarwinia,
-  rococoDataHighway: nodeDataHighway,
+  rococoDataHighway: nodeDataHighwayDefault,
   rococoEave: nodeEave,
   rococoEncointer: nodeEncointerNotee,
   rococoGalital: nodeGalital,
@@ -503,7 +512,6 @@ export const namedLogos: Record<string, unknown> = {
   vln: nodeVln,
   web3games: nodeWeb3games,
   westend: nodePolkadot,
-  westlake: nodeWestlake,
   westmint: nodeStatemine,
   whala: nodeWhala,
   zeitgeist: nodeZeitgeist,
