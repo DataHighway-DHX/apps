@@ -156,7 +156,7 @@ export function createRococo (t: TFunction): EndpointOption {
         info: 'rococoDataHighway',
         isDisabled: true, // Rococo reset
         paraId: 2,
-        text: t('rpc.rococo.datahighway', 'DataHighway', { ns: 'apps-config' }),
+        text: t('rpc.rococo.datahighway.spreehafen', 'DataHighway Spreehafen', { ns: 'apps-config' }),
         providers: {
           DataHighway: 'wss://spreehafen.datahighway.com'
         }

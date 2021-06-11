@@ -20,7 +20,8 @@ import crust from './crust';
 import testPara from './cumulus-test-parachain';
 import darwinia from './darwinia';
 import darwiniaParachain from './darwinia-parachain';
-import datahighwayParachain from './datahighway';
+import datahighwaySpreehafenParachainTestnet from './datahighway-spreehafen-parachain-testnet';
+import datahighwayWestlakeChainMainnet from './datahighway-westlake-chain-mainnet';
 import dockPoaMainnet from './dock-poa-mainnet';
 import dockPoaTestnet from './dock-poa-testnet';
 import dotmog from './dotmog';
@@ -85,7 +86,6 @@ import vln from './vln';
 import vlnrococo from './vln-rococo';
 import vodka from './vodka';
 import web3games from './web3games';
-import westlake from './westlake';
 import zeitgeist from './zeitgeist';
 import zenlink from './zenlink';
 import zero from './zero';
@@ -118,9 +118,9 @@ const spec: Record<string, OverrideBundleDefinition> = {
   'crust-parachain': crust,
   'cumulus-subsocial-parachain': subsocial,
   'cumulus-test-parachain': testPara,
-  datahighway: westlake,
-  'datahighway-harbour': westlake,
-  'datahighway-parachain': datahighwayParachain,
+  'datahighway-harbour-chain-testnet': datahighwayWestlakeChainMainnet,
+  'datahighway-spreehafen-parachain-testnet': datahighwaySpreehafenParachainTestnet,
+  'datahighway-westlake-chain-mainnet': datahighwayWestlakeChainMainnet,
   dawn: eave,
   'dev-parachain': zenlink,
   'dock-main-runtime': dockPoaMainnet,
