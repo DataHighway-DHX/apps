@@ -12,6 +12,7 @@ const definitions: OverrideBundleDefinition = {
       // on all versions
       minmax: [0, undefined],
       types: {
+        AccountInfo: 'AccountInfoWithDualRefCount',
         Date: 'i64',
         AccountInfo: 'AccountInfoWithDualRefCount',
         Keys: 'SessionKeys2',

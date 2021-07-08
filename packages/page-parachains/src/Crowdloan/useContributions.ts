@@ -1,96 +1,55 @@
 // Copyright 2017-2021 @polkadot/app-parachains authors & contributors
 // SPDX-License-Identifier: Apache-2.0
 
-import type { StorageKey } from '@polkadot/types';
-import type { Balance, EventRecord, ParaId } from '@polkadot/types/interfaces';
+import type { DeriveContributions, DeriveOwnContributions } from '@polkadot/api-derive/types';
+import type { Balance, ParaId } from '@polkadot/types/interfaces';
 
-import { useCallback, useEffect, useState } from 'react';
+import { useEffect, useState } from 'react';
 
-import { useAccounts, useApi, useEventTrigger } from '@polkadot/react-hooks';
+import { useAccounts, useApi, useCall } from '@polkadot/react-hooks';
 import { encodeAddress } from '@polkadot/util-crypto';
 
-interface Contributions {
-  contributorsHex: string[];
+interface Result extends DeriveContributions {
+  hasLoaded: boolean;
   myAccounts: string[];
   myAccountsHex: string[];
   myContributions: Record<string, Balance>;
 }
 
-const NO_CONTRIB: Contributions = {
+const NO_CONTRIB: Result = {
+  blockHash: '-',
   contributorsHex: [],
+  hasLoaded: false,
   myAccounts: [],
   myAccountsHex: [],
   myContributions: {}
 };
 
-function extractContributors (allAccountsHex: string[], keys: StorageKey[], ss58Format?: number): Partial<Contributions> {
-  const contributorsHex = keys.map((k) => k.toHex());
-  const myAccountsHex = contributorsHex.filter((c) => allAccountsHex.includes(c));
-
-  return {
-    contributorsHex,
-    myAccounts: myAccountsHex.map((a) => encodeAddress(a, ss58Format)),
-    myAccountsHex
-  };
-}
-
-function useMyContributions (childKey: string, keys: string[]): Record<string, Balance> {
-  const { api } = useApi();
-  const [state, setState] = useState<Record<string, Balance>>({});
-
-  useEffect((): void => {
-    keys.length &&
-      Promise
-        .all(keys.map((k) => api.rpc.childstate.getStorage(childKey, k)))
-        .then((values) => setState(
-          values
-            .map((v) => api.createType('Option<StorageData>', v))
-            .map((o) =>
-              o.isSome
-                ? api.createType('Balance', o.unwrap())
-                : api.createType('Balance')
-            )
-            .reduce((all, b, index) => ({ ...all, [keys[index]]: b }), {})
-        ))
-        .catch(console.error);
-  }, [api, childKey, keys]);
-
-  return state;
-}
-
-export default function useContributions (paraId: ParaId, childKey: string): Contributions {
+export default function useContributions (paraId: ParaId): Result {
   const { api } = useApi();
   const { allAccountsHex } = useAccounts();
-  const [state, setState] = useState<Contributions>(() => NO_CONTRIB);
-  const myContributions = useMyContributions(childKey, state.myAccountsHex);
-
-  const trigger = useEventTrigger([
-    api.events.crowdloan.Contributed,
-    api.events.crowdloan.Withdrew,
-    api.events.crowdloan.AllRefunded,
-    api.events.crowdloan.PartiallyRefunded
-  ], useCallback(
-    ({ event: { data } }: EventRecord) =>
-      ((data.length === 1
-        ? data[0] // AllRefunded, PartiallyRefunded [ParaId]
-        : data[1] // Contributed, Withdrew [AccountId, ParaId, Balance]
-      ) as ParaId).eq(paraId),
-    [paraId]
-  ));
+  const [state, setState] = useState<Result>(() => NO_CONTRIB);
+  const derive = useCall<DeriveContributions>(api.derive.crowdloan.contributions, [paraId]);
+  const myContributions = useCall<DeriveOwnContributions>(api.derive.crowdloan.ownContributions, [paraId, state.myAccountsHex]);
 
   useEffect((): void => {
-    trigger &&
-      api.rpc.childstate
-        .getKeys(childKey, '0x')
-        .then((keys) => setState((prev) => ({
-          ...prev,
-          ...extractContributors(allAccountsHex, keys, api.registry.chainSS58)
-        })))
-        .catch(console.error);
-  }, [allAccountsHex, api, childKey, trigger]);
+    derive && setState((prev): Result => {
+      let myAccountsHex = derive.contributorsHex.filter((h) => allAccountsHex.includes(h));
+      let myAccounts: string[];
+
+      if (myAccountsHex.length === prev.myAccountsHex.length) {
+        myAccountsHex = prev.myAccountsHex;
+        myAccounts = prev.myAccounts;
+      } else {
+        myAccounts = myAccountsHex.map((a) => encodeAddress(a, api.registry.chainSS58));
+      }
+
+      return { ...prev, ...derive, hasLoaded: true, myAccounts, myAccountsHex };
+    });
+  }, [api, allAccountsHex, derive]);
 
   useEffect((): void => {
-    setState((prev) => ({
+    myContributions && setState((prev) => ({
       ...prev,
       myContributions
     }));

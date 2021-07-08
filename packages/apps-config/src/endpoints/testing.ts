@@ -35,7 +35,14 @@ export function createTesting (t: TFunction, firstOnly?: boolean): LinkOption[] 
       info: 'edgeware',
       text: t('rpc.test.beresheet', 'Beresheet', { ns: 'apps-config' }),
       providers: {
-        'Commonwealth Labs': 'wss://beresheet1.edgewa.re'
+        'Commonwealth Labs': 'wss://beresheet.edgewa.re'
+      }
+    },
+    {
+      info: 'bifrost',
+      text: t('rpc.test.bifrost', 'Bifrost Asgard', { ns: 'apps-config' }),
+      providers: {
+        Bifrost: 'wss://asgard-rpc.liebi.com/ws'
       }
     },
     {
@@ -43,13 +50,6 @@ export function createTesting (t: TFunction, firstOnly?: boolean): LinkOption[] 
       text: t('rpc.test.bitcountry', 'Bit.Country Tewai', { ns: 'apps-config' }),
       providers: {
         'Bit.Country': 'wss://whenua.bit.country'
-      }
-    },
-    {
-      info: 'bifrost',
-      text: t('rpc.test.bifrost', 'Bifrost Asgard', { ns: 'apps-config' }),
-      providers: {
-        Bifrost: 'wss://bifrost-rpc.liebi.com/ws'
       }
     },
     {
@@ -75,6 +75,13 @@ export function createTesting (t: TFunction, firstOnly?: boolean): LinkOption[] 
         'DCloud Foundation': 'wss://api.decloudf.com/'
       }
     },
+    // {
+    //   info: 'rocky',
+    //   text: t('rpc.test.crust.network', 'Crust Rocky', { ns: 'apps-config' }),
+    //   providers: {
+    //     Pinknode: 'wss://rpc.pinknode.io/rocky/explorer' // https://github.com/polkadot-js/apps/issues/5721
+    //   }
+    // },
     {
       info: 'datahighway-harbour-chain-testnet',
       text: t('rpc.test.datahighway.harbour', 'DataHighway Harbour', { ns: 'apps-config' }),
@@ -102,6 +109,7 @@ export function createTesting (t: TFunction, firstOnly?: boolean): LinkOption[] 
       text: t('rpc.test.dusty', 'Dusty', { ns: 'apps-config' }),
       providers: {
         'Stake Technologies': 'wss://rpc.dusty.plasmnet.io/'
+        // Pinknode: 'wss://rpc.pinknode.io/dusty/explorer' // https://github.com/polkadot-js/apps/issues/5721
       }
     },
     {
@@ -127,9 +135,17 @@ export function createTesting (t: TFunction, firstOnly?: boolean): LinkOption[] 
     },
     {
       info: 'substrate',
+      isDisabled: true, // https://github.com/polkadot-js/apps/issues/5571
       text: t('rpc.test.flamingfir', 'Flaming Fir', { ns: 'apps-config' }),
       providers: {
         Parity: 'wss://substrate-rpc.parity.io'
+      }
+    },
+    {
+      info: 'fantour',
+      text: t('rpc.test.fantour', 'Fantour', { ns: 'apps-config' }),
+      providers: {
+        FantourDev: 'wss://test-ws.fantour.io'
       }
     },
     {
@@ -219,6 +235,7 @@ export function createTesting (t: TFunction, firstOnly?: boolean): LinkOption[] 
       providers: {
         Acala: 'wss://acala-mandala.api.onfinality.io/public-ws',
         'Patract Elara': 'wss://mandala.elara.patract.io'
+        // Pinknode: 'wss://rpc.pinknode.io/mandala/explorer' // https://github.com/polkadot-js/apps/issues/5721
       }
     },
     {
@@ -260,6 +277,20 @@ export function createTesting (t: TFunction, firstOnly?: boolean): LinkOption[] 
       }
     },
     {
+      info: 'opportunity',
+      text: t('rpc.test.opportunity', 'Opportunity', { ns: 'apps-config' }),
+      providers: {
+        Opportunity: 'wss://rpc.opportunity.standard.tech'
+      }
+    },
+    {
+      info: 'origintrail-parachain-testnet',
+      text: t('rpc.origintrail', 'OriginTrail Parachain Testnet', { ns: 'apps-config' }),
+      providers: {
+        'Trace Labs': 'wss://parachain-rpc.origin-trail.network'
+      }
+    },
+    {
       info: 'pangolin',
       text: t('rpc.test.pangolin', 'Pangolin', { ns: 'apps-config' }),
       providers: {
@@ -281,17 +312,17 @@ export function createTesting (t: TFunction, firstOnly?: boolean): LinkOption[] 
       }
     },
     {
-      info: 'polkadex',
-      text: t('rpc.test.polkadex', 'Polkadex', { ns: 'apps-config' }),
-      providers: {
-        'Polkadex Team': 'wss://blockchain.polkadex.trade'
-      }
-    },
-    {
       info: 'polkabtc',
       text: t('rpc.test.polkabtc', 'PolkaBTC', { ns: 'apps-config' }),
       providers: {
         Interlay: 'wss://beta.polkabtc.io/api/parachain'
+      }
+    },
+    {
+      info: 'polkadex',
+      text: t('rpc.test.polkadex', 'Polkadex', { ns: 'apps-config' }),
+      providers: {
+        'Polkadex Team': 'wss://blockchain.polkadex.trade'
       }
     },
     {
@@ -337,6 +368,13 @@ export function createTesting (t: TFunction, firstOnly?: boolean): LinkOption[] 
       }
     },
     {
+      info: 'subgame',
+      text: t('rpc.test.subgame', 'SubGame Staging', { ns: 'apps-config' }),
+      providers: {
+        SubGame: 'wss://staging.subgame.org'
+      }
+    },
+    {
       info: 'ternoa-chaos',
       text: t('rpc.test.ternoa-chaos', 'Ternoa Chaos', { ns: 'apps-config' }),
       providers: {
@@ -366,6 +404,7 @@ export function createTesting (t: TFunction, firstOnly?: boolean): LinkOption[] 
     },
     {
       info: 'unitv',
+      isUnreachable: true, // https://github.com/polkadot-js/apps/issues/5684
       text: t('rpc.test.unitv', 'Unit Network', { ns: 'apps-config' }),
       providers: {
         'Unit Network': 'wss://unitventures.io/'

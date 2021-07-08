@@ -4,9 +4,9 @@
 import type BN from 'bn.js';
 import type { Campaign, LeasePeriod } from '../types';
 
-import React, { useMemo } from 'react';
+import React, { useEffect, useMemo, useState } from 'react';
 
-import { AddressMini, Expander, Icon, ParaLink, TxButton } from '@polkadot/react-components';
+import { AddressMini, Expander, Icon, ParaLink, Spinner, TxButton } from '@polkadot/react-components';
 import { useAccounts, useApi, useParaEndpoints } from '@polkadot/react-hooks';
 import { BlockToTime, FormatBalance } from '@polkadot/react-query';
 import { formatNumber } from '@polkadot/util';
@@ -17,6 +17,7 @@ import Refund from './Refund';
 import useContributions from './useContributions';
 
 interface Props {
+  bestHash?: string;
   bestNumber?: BN;
   className?: string;
   isOdd?: boolean;
@@ -25,12 +26,18 @@ interface Props {
   value: Campaign;
 }
 
-function Fund ({ bestNumber, className, isOdd, isOngoing, leasePeriod, value: { childKey, info: { cap, depositor, end, firstPeriod, lastPeriod, raised, verifier }, isCapped, isEnded, isWinner, paraId } }: Props): React.ReactElement<Props> {
+interface LastChange {
+  prevHash: string;
+  prevLength: number;
+}
+
+function Fund ({ bestHash, bestNumber, className, isOdd, isOngoing, leasePeriod, value: { info: { cap, depositor, end, firstPeriod, lastPeriod, raised, verifier }, isCapped, isEnded, isWinner, paraId } }: Props): React.ReactElement<Props> {
   const { t } = useTranslation();
   const { api } = useApi();
   const { isAccount } = useAccounts();
   const endpoints = useParaEndpoints(paraId);
-  const { contributorsHex, myAccounts, myAccountsHex, myContributions } = useContributions(paraId, childKey);
+  const { blockHash, contributorsHex, hasLoaded, myAccounts, myAccountsHex, myContributions } = useContributions(paraId);
+  const [lastChange, setLastChange] = useState<LastChange>(() => ({ prevHash: '', prevLength: 0 }));
 
   const isDepositor = useMemo(
     () => isAccount(depositor.toString()),
@@ -59,120 +66,131 @@ function Fund ({ bestNumber, className, isOdd, isOngoing, leasePeriod, value: { 
   const canContribute = isOngoing && !isCapped && !isWinner && !!blocksLeft;
   const canDissolve = raised.isZero();
   const canWithdraw = !raised.isZero() && hasEnded;
-  const homepage = endpoints.length && endpoints[0].homepage;
+  const homepage = endpoints.length !== 0 && endpoints[0].homepage;
+
+  useEffect((): void => {
+    setLastChange((prev): LastChange => {
+      const prevLength = contributorsHex.length;
+
+      return prev.prevLength !== prevLength
+        ? { prevHash: blockHash, prevLength }
+        : prev;
+    });
+  }, [contributorsHex, blockHash]);
 
   return (
-    <>
-      <tr className={`${className || ''} ${isOdd ? 'isOdd' : 'isEven'} ${isOngoing && homepage ? 'noBorder' : ''}`}>
-        <td className='number'><h1>{formatNumber(paraId)}</h1></td>
-        <td className='badge'><ParaLink id={paraId} /></td>
-        <td className='media--800'>
-          {isWinner
-            ? t<string>('Winner')
-            : blocksLeft
-              ? isCapped
-                ? t<string>('Capped')
-                : isOngoing
-                  ? t<string>('Active')
-                  : t<string>('Past')
-              : t<string>('Ended')
-          }
-        </td>
-        <td className='address media--1400'><AddressMini value={depositor} /></td>
-        <td className='all number together media--1200'>
-          {blocksLeft && (
-            <BlockToTime value={blocksLeft} />
+    <tr className={`${className || ''} ${isOdd ? 'isOdd' : 'isEven'}`}>
+      <td className='number'><h1>{formatNumber(paraId)}</h1></td>
+      <td className='badge'><ParaLink id={paraId} /></td>
+      <td className='media--800'>
+        {isWinner
+          ? t<string>('Winner')
+          : blocksLeft
+            ? isCapped
+              ? t<string>('Capped')
+              : isOngoing
+                ? t<string>('Active')
+                : t<string>('Past')
+            : t<string>('Ended')
+        }
+      </td>
+      <td className='address media--1400'><AddressMini value={depositor} /></td>
+      <td className='all number together media--1200'>
+        {blocksLeft && (
+          <BlockToTime value={blocksLeft} />
+        )}
+        #{formatNumber(end)}
+      </td>
+      <td className='number all together'>
+        {firstPeriod.eq(lastPeriod)
+          ? formatNumber(firstPeriod)
+          : `${formatNumber(firstPeriod)} - ${formatNumber(lastPeriod)}`
+        }
+      </td>
+      <td className='number together'>
+        <FormatBalance
+          value={raised}
+          withCurrency={false}
+        />&nbsp;/&nbsp;<FormatBalance
+          value={cap}
+        />
+        <div>{percentage}</div>
+        {myAccounts.length !== 0 && (
+          <Expander
+            summary={t<string>('My contributions ({{count}})', { replace: { count: myAccounts.length } })}
+            withBreaks
+          >
+            {myAccounts.map((a, index) => (
+              <AddressMini
+                balance={myContributions[myAccountsHex[index]]}
+                key={a}
+                value={a}
+                withBalance
+              />
+            ))}
+          </Expander>
+        )}
+      </td>
+      <td className='number together media--1100'>
+        {!hasLoaded
+          ? <Spinner noLabel />
+          : (
+            <>
+              {bestHash && (
+                <Icon
+                  color={
+                    lastChange.prevHash === bestHash
+                      ? 'green'
+                      : 'transparent'
+                  }
+                  icon='chevron-up'
+                  isPadded
+                />
+              )}
+              {contributorsHex.length !== 0 && (
+                formatNumber(contributorsHex.length)
+              )}
+            </>
           )}
-          #{formatNumber(end)}
-        </td>
-        <td className='number all together'>
-          {firstPeriod.eq(lastPeriod)
-            ? formatNumber(firstPeriod)
-            : `${formatNumber(firstPeriod)} - ${formatNumber(lastPeriod)}`
-          }
-        </td>
-        <td className='number together'>
-          <FormatBalance
-            value={raised}
-            withCurrency={false}
-          />&nbsp;/&nbsp;<FormatBalance
-            value={cap}
+      </td>
+      <td className='button media--1000'>
+        {canWithdraw && contributorsHex.length !== 0 && (
+          <Refund paraId={paraId} />
+        )}
+        {canDissolve && (
+          <TxButton
+            accountId={depositor}
+            className='media--1400'
+            icon='times'
+            isDisabled={!isDepositor}
+            label={
+              isEnded
+                ? t<string>('Close')
+                : t<string>('Cancel')
+            }
+            params={[paraId]}
+            tx={api.tx.crowdloan.dissolve}
           />
-          <div>{percentage}</div>
-        </td>
-        <td className='number media--1100'>
-          {contributorsHex.length !== 0 && (
-            formatNumber(contributorsHex.length)
-          )}
-        </td>
-        <td className='badge media--1000'>
-          <Icon
-            color={myAccounts.length ? 'green' : 'gray'}
-            icon='asterisk'
+        )}
+        {isOngoing && canContribute && (
+          <Contribute
+            cap={cap}
+            needsSignature={verifier.isSome}
+            paraId={paraId}
+            raised={raised}
           />
-        </td>
-        <td className='button media--1000'>
-          {canWithdraw && contributorsHex.length !== 0 && (
-            <Refund paraId={paraId} />
-          )}
-          {canDissolve && (
-            <TxButton
-              accountId={depositor}
-              className='media--1400'
-              icon='times'
-              isDisabled={!isDepositor}
-              label={
-                isEnded
-                  ? t<string>('Close')
-                  : t<string>('Cancel')
-              }
-              params={[paraId]}
-              tx={api.tx.crowdloan.dissolve}
-            />
-          )}
-          {isOngoing && canContribute && (
-            <Contribute
-              cap={cap}
-              needsSignature={verifier.isSome}
-              paraId={paraId}
-              raised={raised}
-            />
-          )}
-        </td>
-      </tr>
-      {isOngoing && homepage && (
-        <tr className={`${className || ''} ${isOdd ? 'isOdd' : 'isEven'} isExpanded`}>
-          <td colSpan={2} />
-          <td className='media--800' />
-          <td className='no-pad-top media--1400'>
-            {myAccounts.length !== 0 && (
-              <Expander summary={t<string>('My contributions ({{count}})', { replace: { count: myAccounts.length } })}>
-                {myAccounts.map((a, index) => (
-                  <AddressMini
-                    balance={myContributions[myAccountsHex[index]]}
-                    key={a}
-                    value={a}
-                    withBalance
-                  />
-                ))}
-              </Expander>
-            )}
-          </td>
-          <td className='media--1200' />
-          <td className='all' />
-          <td />
-          <td className='media--1100' />
-          <td className='media--1000' />
-          <td className='middle no-pad-top media--1000'>
+        )}
+        {isOngoing && homepage && (
+          <div>
             <a
               href={homepage}
               rel='noopener noreferrer'
               target='_blank'
-            >{t<string>('Homepage')}</a>
-          </td>
-        </tr>
-      )}
-    </>
+            >{t<string>('Homepage')}</a>&nbsp;&nbsp;&nbsp;
+          </div>
+        )}
+      </td>
+    </tr>
   );
 }
 
